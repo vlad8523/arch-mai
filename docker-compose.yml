@@ -1,0 +1,43 @@
+services:
+  api:
+    build: app/
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_LOGIN=stud
+      - DB_PASSWORD=stud
+      - DB_DATABASE=archdb    
+    ports:
+      - 8000:8000
+    networks:
+      - arch-network
+
+  db:
+    container_name: postgres
+    image: postgres:15
+    environment:
+      - PGUSER=postgres
+      - POSTGRES_USER=stud
+      - POSTGRES_PASSWORD=stud
+      - PGDATA=/data/postgres
+      - POSTGRES_DB=archdb
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - arch-network
+
+volumes:
+  db:
+
+networks:
+  arch-network:
+    driver: "bridge"
+    external: false

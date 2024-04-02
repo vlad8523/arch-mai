@@ -1,0 +1,254 @@
+openapi: 3.0.0
+info:
+  title: BlaBla lab
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Example server
+paths:
+  "/api/v1/user/":
+    post:
+      summary: Create User
+      operationId: create_user_api_v1_user__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserCreate"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/user/{user_id}":
+    get:
+      summary: Get User
+      operationId: get_user_api_v1_user__user_id__get
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    patch:
+      summary: Update User
+      operationId: update_user_api_v1_user__user_id__patch
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserUpdateMe"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Update User Api V1 User  User Id  Patch
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      summary: Delete User
+      operationId: delete_user_api_v1_user__user_id__delete
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserLogin"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Delete User Api V1 User  User Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/user/search":
+    get:
+      summary: Get User By Name
+      operationId: get_user_by_name_api_v1_user_search_get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserSearchFirstSecondName"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/login":
+    post:
+      summary: Login
+      operationId: login_api_v1_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserLogin"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UserCreate:
+      properties:
+        first_name:
+          type: string
+          title: First Name
+        second_name:
+          type: string
+          title: Second Name
+        email:
+          type: string
+          title: Email
+        login:
+          type: string
+          title: Login
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - first_name
+      - second_name
+      - email
+      - login
+      - password
+      title: UserCreate
+    UserLogin:
+      properties:
+        email:
+          type: string
+          title: Email
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - email
+      - password
+      title: UserLogin
+    UserSearchFirstSecondName:
+      properties:
+        first_name:
+          type: string
+          title: First Name
+        second_name:
+          type: string
+          title: Second Name
+      type: object
+      required:
+      - first_name
+      - second_name
+      title: UserSearchFirstSecondName
+    UserUpdateMe:
+      properties:
+        first_name:
+          anyOf:
+          - type: string
+          title: First Name
+        second_name:
+          anyOf:
+          - type: string
+          title: Second Name
+        email:
+          anyOf:
+          - type: string
+          title: Email
+      type: object
+      title: UserUpdateMe
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
