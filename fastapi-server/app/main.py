@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
-from api.main import api_router
-from core.db import connect
+from app.api.main import api_router
+from app.core.db import connect
 
-from core.config import settings
+from app.core.app_settings import settings
 
 app = FastAPI(
     title="BlaBla lab",

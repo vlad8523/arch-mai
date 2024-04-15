@@ -1,16 +1,14 @@
 from datetime import timedelta
-from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 
 from models.user import UserLogin
 from models.misc import Token
-from core.db import get_db
-from core import security
-from core.security import settings
+from app.core.db import get_db
+from app.core import security
+from app.core.security import settings
 
-import crud
-
+from app import crud
 
 router = APIRouter()
 

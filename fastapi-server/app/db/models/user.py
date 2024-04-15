@@ -1,5 +1,3 @@
-from sqlmodel import SQLModel, Field
-
 class UserBase(SQLModel):
     first_name: str
     second_name: str
@@ -51,3 +49,18 @@ class UserSearchFirstSecondName(SQLModel):
 class UserLogin(SQLModel):
     email: str
     password: str
+
+
+from app.db.models.base import Base, BaseDBModel
+from app.db.models.metadata import metadata_family
+
+from sqlalchemy import Column, String, Date
+
+class UserBase(Base, BaseDBModel):
+    __metadata__ = metadata_family\
+    
+    first_name = Column(String)
+    second_name = Column(String)
+    email = Column(String)
+
+    
