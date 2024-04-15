@@ -10,8 +10,11 @@ SQLA_REPO_TYPE = TypeVar("SQLA_REPO_TYPE", bound=SQLAlchemyRepository)
 
 
 def get_repository(
-    repotype: Type[SQLA_REPO_TYPE]
+    repo_type: Type[SQLA_REPO_TYPE]
 ) -> Callable[[AsyncSession], Type[SQLA_REPO_TYPE]]:
     def get_repo(
-        db: AsyncSession = Depends(get)
-    )
+        db: AsyncSession = Depends(get_async_session)
+    ) -> Type[SQLA_REPO_TYPE]:
+        return repo_type(db=db)
+    
+    return get_repo

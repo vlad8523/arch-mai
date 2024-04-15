@@ -12,14 +12,20 @@ class AppSettings():
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     postgres_driver: str = "asyncpg"
-    postgres_user: str = os.getenv("DB_LOGIN"),
-    postgres_password: str = os.getenv("DB_PASSWORD"),
-    postgres_host: str = os.getenv("DB_HOST"),
-    postgres_port: int = os.getenv("DB_PORT"),
-    postgres_db: str = os.getenv("DB_DATABASE")
+    postgres_user: str = os.getenv("DB_LOGIN")
+    postgres_password = os.getenv("DB_PASSWORD")
+    postgres_host = os.getenv("DB_HOST")
+    postgres_port = os.getenv("DB_PORT")
+    postgres_db = os.getenv("DB_DATABASE")
 
     @property
     def database_url(self) -> URL:
+        print(self.postgres_driver,
+self.postgres_user,
+self.postgres_password,
+self.postgres_host,
+self.postgres_port,
+self.postgres_db)
         return URL.create(
             f"postgresql+{self.postgres_driver}",
             username=self.postgres_user,

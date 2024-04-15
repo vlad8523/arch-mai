@@ -1,10 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class BaseSchema(BaseModel):
     pass
 
 class IDSchemaMixin(BaseModel):
-    id: int
+    model_config = ConfigDict(extra='allow')
 
-    class Config(BaseModel.Config):
-        orm_mode = True
+    id: int

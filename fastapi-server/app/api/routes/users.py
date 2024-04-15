@@ -99,4 +99,18 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.api.de
+from app.api.dependencies.repository import get_repository
+from app.db.repositories.user import UserRepository
+from app.models.domain.user import UserInDB, UserCreate, UserBase
+
+router = APIRouter()
+
+
+@router.post("/", response_model=UserCreate)
+async def create_user(
+    user_new: UserBase,
+    repository: UserRepository = Depends(get_repository(UserRepository))
+) -> UserCreate | None:
+    user = await repository.create(obj_new=user_new)
+    print(f"user: {user}, typeof: {type(user)}")
+    return user

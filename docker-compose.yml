@@ -1,6 +1,6 @@
 services:
   api:
-    build: app/
+    build: fastapi-server/
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -34,8 +34,26 @@ services:
     networks:
       - arch-network
 
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    volumes:
+     - ./docker_pg_data/pgadmin-data:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_LISTEN_PORT=80
+    depends_on:
+      - db
+    networks:
+      arch-network:
+
 volumes:
   db:
+  pgadmin-data:
 
 networks:
   arch-network:

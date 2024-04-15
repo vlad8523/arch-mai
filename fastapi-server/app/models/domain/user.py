@@ -9,3 +9,6 @@ class UserBase(BaseSchema):
 
 class UserCreate(UserBase):
     id: int
+
+class UserInDB(UserBase, IDSchemaMixin):
+    pass
