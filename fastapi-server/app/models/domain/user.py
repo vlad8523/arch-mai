@@ -6,6 +6,7 @@ class UserBase(BaseSchema):
     first_name: str
     second_name: str
     email: str
+    is_driver: bool
 
 class UserCreate(UserBase):
     id: int

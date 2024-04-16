@@ -1,5 +1,8 @@
 */.structurizr
+
 .idea/
+
+docker_pg_data/
 
 */workspace.json
 

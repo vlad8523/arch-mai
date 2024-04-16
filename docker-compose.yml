@@ -1,16 +1,27 @@
 services:
   api:
+    container_name: api
     build: fastapi-server/
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_LOGIN=stud
       - DB_PASSWORD=stud
-      - DB_DATABASE=archdb    
+      - DB_DATABASE=archdb
+      - MONGO_URI=mongodb://mongo_db:27017
+      - MONGO_DB=bla-bla-db
     ports:
       - 8000:8000
     networks:
       - arch-network
+
+  mongo_db:
+    container_name: mongo_db
+    image: mongo
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017
 
   db:
     container_name: postgres
@@ -53,6 +64,7 @@ services:
 
 volumes:
   db:
+  mongodb:
   pgadmin-data:
 
 networks:

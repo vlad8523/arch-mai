@@ -19,6 +19,9 @@ async def get_async_engine() -> AsyncEngine:
 
 async def connect():
     async_engine = await get_async_engine()
+    print("Connection getting success")
     async with async_engine.begin() as async_conn:
 
         await async_conn.run_sync(Base.metadata.create_all)
+
+

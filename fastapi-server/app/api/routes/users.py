@@ -76,41 +76,62 @@
 #     db_user = crud.update_user(session=session, db_user=db_user, user_in=user_in)
 
 
-# @router.delete("/{user_id}")
-# def delete_user(
-#     user_id: int,
-#     user_login: UserLogin,
-#     session=Depends(get_db)) -> Any:
-
-#     user = session.get(User, user_id)
-#     if not user:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     elif user.email != user_login.email or not verify_password(user_login.password, user.hashed_password):
-#         print(user.email, user_login.email)
-#         raise HTTPException(
-#             status_code=403, detail="Wrong email or password"
-#         )
-
-#     session.delete(user)
-#     session.commit()
-#     return Message(message="User deleted successfully")
-
-
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.api.dependencies.repository import get_repository
+from app.api.dependencies.postgres_repository import get_repository
 from app.db.repositories.user import UserRepository
 from app.models.domain.user import UserInDB, UserCreate, UserBase
 
 router = APIRouter()
 
 
-@router.post("/", response_model=UserCreate)
+@router.post("/", response_model=UserInDB)
 async def create_user(
     user_new: UserBase,
     repository: UserRepository = Depends(get_repository(UserRepository))
-) -> UserCreate | None:
+) -> UserInDB | None:
+    existed_user = await repository.get_user_by_email(user_new.email)
+
+    if existed_user:
+        print(existed_user)
+        raise HTTPException(
+            status_code=409,
+            detail="User with this email is exist"
+        )
+
+
     user = await repository.create(obj_new=user_new)
-    print(f"user: {user}, typeof: {type(user)}")
+    
+    return user
+
+
+@router.get("/{user_id}")
+async def get_user(
+    user_id: int, 
+    repository: UserRepository = Depends(get_repository(UserRepository))
+) -> UserInDB | None:
+    user = await repository.read_by_id(user_id)
+    
+    if not user:
+        raise HTTPException(
+            status_code=400,
+            detail="No user with this id.",
+        )
+    
+    return user
+
+
+@router.delete("/{user_id}")
+async def delete_user(
+    user_id: int, 
+    repository: UserRepository = Depends(get_repository(UserRepository))
+) -> UserInDB | None:
+    user = await repository.delete(user_id)
+
+    if not user: 
+        raise HTTPException(
+            status_code=400, detail="User not found"
+        )
+    
     return user

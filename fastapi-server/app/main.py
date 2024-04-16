@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
 from app.api.main import api_router
-from app.db.db import connect
+from app.handlers.event_handlers import startup
 from app.core.config import get_app_settings
 
 app = FastAPI(
@@ -12,4 +12,4 @@ app = FastAPI(
 settings = get_app_settings()
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
-app.add_event_handler("startup", connect)
+app.add_event_handler("startup", startup)
