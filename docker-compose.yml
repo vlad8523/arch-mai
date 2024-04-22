@@ -22,6 +22,8 @@ services:
       - mongodb:/data/db
     ports:
       - 27017:27017
+    networks:
+      - arch-network
 
   db:
     container_name: postgres
@@ -49,6 +51,7 @@ services:
     container_name: pgadmin4
     image: dpage/pgadmin4
     restart: always
+    user: '$UID:$GID'
     ports:
       - "5050:80"
     volumes:

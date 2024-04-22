@@ -11,7 +11,5 @@ class BaseMongoRepository:
     collection_name: str = None
 
     async def create_collection(self, db_client: AsyncIOMotorClient):
-        print(f"create_collection {self.collection_name}") 
-        if self.collection_name not in db_client.get_database(self.db_name).list_collection_names():
-            await db_client.get_database(self.db_name).create_collection(self.collection_name)
+        await db_client.get_database(self.db_name).create_collection(self.collection_name)
         
