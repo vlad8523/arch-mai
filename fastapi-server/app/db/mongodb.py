@@ -1,4 +1,5 @@
 from app.core.config import get_app_settings
+from bson import ObjectId
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -28,3 +29,7 @@ async def connect():
     except Exception as e:
         print(e)
         print(f"Can't connect to mongo {get_app_settings().mongo_uri}")
+
+def get_filter(_id: str) -> dict:
+    return {'_id': ObjectId(_id)}
+    
