@@ -1,10 +1,10 @@
 from typing import List
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.db.repositories.base import SQLAlchemyRepository
 from app.db.models.user import User as UserModel
-from app.models.domain.user import UserCreate, UserInDB
+from app.models.domain.user import UserBase, UserCreate, UserInDB
 
 
 class UserRepository(SQLAlchemyRepository):
@@ -29,3 +29,7 @@ class UserRepository(SQLAlchemyRepository):
 
         return res.fetchall()
         
+
+    async def update_user(self, user_id: int, user_update: UserBase):
+        stmt = update(self.sqla_model).where(UserModel.id==user_id).values(dict(user_update))
+        await self.db.execute(stmt)
