@@ -8,7 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 
 from app.api.dependencies.mongo_repository import get_repository
 from app.db.mongo_repositories.routes import RoutesRepository
-from app.db.mongodb import db_client, get_filter
+from app.db.mongodb import get_filter
 from app.models.domain.route import CreateRoute, Route, UpdatePassengerList
 
 router = APIRouter()
@@ -57,5 +57,18 @@ async def read_route_by_id(
     return RoutesRepository().map(db_route)
 
 
+@router.get("{route_id}")
+async def delete_route_by_id(
+    route_id: str,
+    repository: AsyncIOMotorCollection = Depends(get_repository(RoutesRepository))        
+):
+    if not ObjectId.is_valid(route_id):
+        return Response(status_code=status.HTTP_400_BAD_REQUEST)
 
+    db_route = await repository.find_one_and_delete(get_filter(route_id))
+
+    if db_route is None:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+    
+    return "Succesfully delete route"
 

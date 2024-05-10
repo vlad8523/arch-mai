@@ -5,4 +5,5 @@ appSettings = AppSettings()
 
 
 def get_app_settings() -> AppSettings:
+    print(appSettings.database_url)
     return appSettings

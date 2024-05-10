@@ -11,5 +11,9 @@ class UserBase(BaseSchema):
 class UserCreate(UserBase):
     id: int
 
+class UserSearch(BaseSchema):
+    first_name: str
+    second_name: str
+
 class UserInDB(UserBase, IDSchemaMixin):
     pass

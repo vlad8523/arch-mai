@@ -14,7 +14,7 @@ class CreateRoute(BaseModel):
     start_point: str
     destination_point: str
     driver_id: int
-    passenger_ids: List[int]
+    passenger_ids: List[int] = []
 
 
 class Route(CreateRoute):
