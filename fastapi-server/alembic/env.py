@@ -28,7 +28,6 @@ target_metadata = Base.metadata
 # ... etc.
 from app.core.config import get_app_settings
 database_url = "postgresql+asyncpg://stud:stud@localhost:5432/archdb"
-print(database_url)
 config.set_main_option("sqlalchemy.url", database_url)
 
 

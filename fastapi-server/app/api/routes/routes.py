@@ -51,8 +51,6 @@ async def read_route_by_id(
 
     if db_route is None:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
-    
-    print(db_route)
 
     return RoutesRepository().map(db_route)
 

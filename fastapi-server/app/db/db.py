@@ -6,7 +6,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 async def get_async_engine() -> AsyncEngine:
-    print(get_app_settings().database_url)
     try:
         async_engine: AsyncEngine = create_async_engine(
             get_app_settings().database_url,
