@@ -1,7 +1,7 @@
 services:
   api:
     container_name: api
-    build: fastapi-server/
+    build: application/
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
