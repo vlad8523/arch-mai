@@ -1,19 +1,10 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Request, Response, status
 
 from config import settings
 from core import route
+from models.users import UserLogin
+from api.main import api_router
 
-app = FastAPI
+app = FastAPI()
 
-@route(
-    request_method=app.post,
-    path='/api/login',
-    status_code=status.HTTP_201_CREATED,
-    payload_key='username_password',
-    service_url=settings.USERS_SERVICE_URL,
-    authentication_required=False,
-    post_processing_func='post_processing.access_token_generate_handler',
-    response_model='datastructures.users.LoginResponse'
-)
-async def login():
-    pass
+app.include_router(api_router, prefix='/api')

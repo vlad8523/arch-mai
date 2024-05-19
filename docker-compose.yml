@@ -1,21 +1,47 @@
 services:
-  api:
-    container_name: api
-    build: application/
+  # api:
+  #   container_name: api
+  #   build: application/
+  #   environment:
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_LOGIN=stud
+  #     - DB_PASSWORD=stud
+  #     - DB_DATABASE=archdb
+  #     - MONGO_URI=mongodb://mongo_db:27017
+  #     - MONGO_DB=bla-bla-db
+  #   ports:
+  #     - 8000:8000
+  #   networks:
+  #     - arch-network
+  #   depends_on:
+  #     - db
+  gateway:
+    container_name: gateway
+    build: application/gateway
+    environment:
+      - USERS_SERVICE_URL=user-service
+    ports:
+      - 8000:8000
+    networks:
+      - arch-network
+    depends_on:
+      - user-service
+
+  user-service:
+    container_name: user-service
+    build: application/user_service
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_LOGIN=stud
       - DB_PASSWORD=stud
       - DB_DATABASE=archdb
-      - MONGO_URI=mongodb://mongo_db:27017
-      - MONGO_DB=bla-bla-db
-    ports:
-      - 8000:8000
     networks:
       - arch-network
     depends_on:
       - db
+  
 
   mongo_db:
     container_name: mongo_db

@@ -10,7 +10,7 @@ from exceptions import (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted)
 from network import make_request
 
 
-def route(
+def route(app,
         request_method, path: str, status_code: int,
         payload_key: str, service_url: str,
         authentication_required: bool = False,
@@ -27,8 +27,8 @@ def route(
         if response_list:
             response_model = List[response_model]
 
-    app_any = request_method(
-        path, status_code=status_code,
+    app_any = request_method(app,
+        path=path, status_code=status_code,
         response_model=response_model
     )
 

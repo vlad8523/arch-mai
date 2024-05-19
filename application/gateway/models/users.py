@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class UsernamePasswordForm(BaseModel):
+class UserLogin(BaseModel):
     username: str
     password: str
 
@@ -18,4 +18,3 @@ class UserResponse(BaseModel):
     second_name: str
     email: str
     is_driver: bool
-    
