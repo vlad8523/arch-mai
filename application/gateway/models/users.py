@@ -2,14 +2,21 @@ from pydantic import BaseModel
 
 
 class UserLogin(BaseModel):
-    username: str
+    email: str
     password: str
 
 
+class UserData(BaseModel):
+    first_name: str
+    second_name: str
+    is_driver: bool
 
-class LoginResponse(BaseModel):
-    access_token: str
-    token_type: str
+class UserCreate(UserData, UserLogin):
+    pass
+
+class UserSearch(BaseModel):
+    first_name: str
+    second_name: str
 
 
 class UserResponse(BaseModel):
@@ -17,4 +24,5 @@ class UserResponse(BaseModel):
     first_name: str
     second_name: str
     email: str
+    hashed_password: str
     is_driver: bool

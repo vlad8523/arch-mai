@@ -6,7 +6,7 @@ from sqlalchemy import select, update
 from core.config import get_app_settings
 from db.repositories.base import SQLAlchemyRepository
 from db.models.user import User as UserModel
-from models.domain.user import UserBase, UserCreate, UserInDB
+from models.domain.user import UserData, UserCreate, UserInDB
 
 
 class UserRepository(SQLAlchemyRepository):
@@ -62,6 +62,14 @@ class UserRepository(SQLAlchemyRepository):
         return res.fetchall()
         
 
-    async def update_user(self, user_id: int, user_update: UserBase):
-        stmt = update(self.sqla_model).where(UserModel.id==user_id).values(dict(user_update))
+    async def update_user(self, user_id: int, user_update: UserData):
+        data = user_update.model_dump()
+
+        data.update(
+            hashed_password = get_password_hash(data["password"])
+        )
+
+        del data["password"]
+
+        stmt = update(self.sqla_model).where(UserModel.id==user_id).values(data)
         await self.db.execute(stmt)

@@ -20,7 +20,7 @@ def generate_access_token(
     expire = datetime.now() + expires_delta
     token_data = {
         'id': data['id'],
-        'user_type': data['user_type'],
+        'is_driver': data['is_driver'],
         'exp': expire,
     }
 
@@ -47,8 +47,7 @@ def generate_request_header(token_payload):
 
 
 def is_admin_user(token_payload):
-    return token_payload['user_type'] == 'admin'
-
+    return token_payload['is_driver']
 
 def is_default_user(token_payload):
     return token_payload['user_type'] in ['default', 'admin']

@@ -7,18 +7,18 @@ class UserLogin(BaseSchema):
     password: str
 
 
-class UserBase(BaseSchema):
+class UserData(BaseSchema):
     first_name: str
     second_name: str
     is_driver: bool
 
-class UserCreate(UserBase, UserLogin):
+class UserCreate(UserData, UserLogin):
     pass
 
 class UserSearch(BaseSchema):
     first_name: str
     second_name: str
 
-class UserInDB(UserBase, IDSchemaMixin):
+class UserInDB(UserData, IDSchemaMixin):
     email: str
     hashed_password: str
