@@ -2,7 +2,7 @@ import os
 
 
 class Settings():
-    SECRET_KEY = 'e0e5f53b239df3dc39517c34ae0a1c09d1f5d181dfac1578d379a4a5ee3e0ef5'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     ALGORITHM = 'HS256'
 
     ACCESS_TOKEN_DEFAULT_EXPIRE_MINUTES: int = 360

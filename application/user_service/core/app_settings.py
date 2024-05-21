@@ -6,7 +6,8 @@ from sqlalchemy.engine import URL
 
 
 class AppSettings():
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    ALGORITHM = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     postgres_driver: str = "asyncpg"

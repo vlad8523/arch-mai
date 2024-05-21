@@ -1,16 +1,19 @@
+from os import access
+from typing import Annotated
 import aiohttp
-from fastapi import APIRouter, status, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, status, HTTPException, Request, Response
+from fastapi.security import OAuth2PasswordRequestForm
 
-from auth import generate_access_token
+from auth import generate_access_token, get_current_user, oauth2_scheme
 from config import settings
-from models.users import UserLogin
+from models.users import UserLogin, UserResponse
 from network import make_request
 
 router = APIRouter()
 
 @router.post('/')
 async def login(
-    user_form: UserLogin,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     request: Request, response: Response
 ):
     scope = request.scope
@@ -19,7 +22,10 @@ async def login(
     path = scope['path']
 
     url = f'{settings.USERS_SERVICE_URL}{path}'
-    payload = user_form.model_dump() if user_form else {}
+    payload = {
+        "username": form_data.username,
+        "password": form_data.password
+    }
 
     try: 
         resp_data, status_code = await make_request(
@@ -43,6 +49,11 @@ async def login(
     response.status_code = status_code
 
     if status_code == status.HTTP_200_OK:
-        resp_data = generate_access_token(data=resp_data)
+        return {"access_token": resp_data, "token_type": "bearer"}
 
-    return resp_data
+
+@router.get("")
+async def get_user(
+    current_user: Annotated[dict, Depends(get_current_user)]
+):
+    return current_user

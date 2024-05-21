@@ -22,6 +22,15 @@ async def create_user(
             detail="User with this email is exist."
         )
     
+    existed_user = await repository.get_user_by_username(user_new.username)
+    
+    if existed_user:
+        print(existed_user)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User with this username is exist."
+        )
+    
     user = await repository.create(obj_new=user_new)
 
     return user

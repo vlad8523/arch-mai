@@ -1,19 +1,21 @@
-from typing import Any
+from typing import Annotated, Any
 import aiohttp
 
-from fastapi import APIRouter, Request, Response, HTTPException, status
+from fastapi import APIRouter, Depends, Request, Response, HTTPException, status
 from network import make_request
 
 from models.route import CreateRoute, Route, UpdatePassengerList
 from config import settings
+from auth import oauth2_scheme
 
 
 router = APIRouter()
 
-@router.post("")
+@router.post("/")
 async def create_route(
     route_new: CreateRoute,
-    request: Request, response: Response
+    request: Request, response: Response,
+    token: Annotated[str, Depends(oauth2_scheme)]
 ) -> Any:
     scope = request.scope
 
@@ -57,7 +59,8 @@ async def create_route(
 async def update_passengers_list(
     route_id: str, 
     passenger_list: UpdatePassengerList,
-    request: Request, response: Response
+    request: Request, response: Response,
+    token: Annotated[str, Depends(oauth2_scheme)]
 ):
     scope = request.scope
 
@@ -73,6 +76,7 @@ async def update_passengers_list(
             url=url,
             method=method,
             data=payload,
+            headers={"Authentification": f"Bearer {token}"}
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
@@ -100,7 +104,8 @@ async def update_passengers_list(
 @router.get("/{route_id}", response_model=Route)
 async def read_route_by_id(
     route_id: str,
-    request: Request, response: Response
+    request: Request, response: Response,
+    token: Annotated[str, Depends(oauth2_scheme)]
 ) -> Route | None:
     scope = request.scope
 
@@ -112,7 +117,8 @@ async def read_route_by_id(
     try: 
         resp_data, status_code = await make_request(
             url=url,
-            method=method
+            method=method,
+            headers={"Authentification": f"Bearer {token}"}
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
@@ -140,7 +146,8 @@ async def read_route_by_id(
 @router.delete("/{route_id}")
 async def delete_route_by_id(
     route_id: str,
-    request: Request, response: Response       
+    request: Request, response: Response,
+    token: Annotated[str, Depends(oauth2_scheme)]      
 ):
     scope = request.scope
 
@@ -153,7 +160,8 @@ async def delete_route_by_id(
     try: 
         resp_data, status_code = await make_request(
             url=url,
-            method=method
+            method=method,
+            headers={"Authentification": f"Bearer {token}"}
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
