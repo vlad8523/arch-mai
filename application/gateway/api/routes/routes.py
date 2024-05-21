@@ -1,27 +1,28 @@
+from typing import Any
 import aiohttp
-from fastapi import APIRouter, status, HTTPException, Request, Response
 
-from models.users import UserCreate, UserResponse, UserSearch
-from config import settings
+from fastapi import APIRouter, Request, Response, HTTPException, status
 from network import make_request
+
+from models.route import CreateRoute, Route, UpdatePassengerList
+from config import settings
 
 
 router = APIRouter()
 
-
-@router.post("/")
-async def create_user(
-    user_new: UserCreate,
+@router.post("")
+async def create_route(
+    route_new: CreateRoute,
     request: Request, response: Response
-) -> UserResponse | None:
+) -> Any:
     scope = request.scope
 
     method = scope['method'].lower()
     path = scope['path']
     
-    url = f'{settings.USERS_SERVICE_URL}{path}'
+    url = f'{settings.ROUTES_SERVICE_URL}{path}'
 
-    payload = user_new.model_dump() if user_new else {}
+    payload = route_new.model_dump() if route_new else {}
 
     try: 
         resp_data, status_code = await make_request(
@@ -52,49 +53,10 @@ async def create_user(
         )
 
 
-@router.get("/{user_id}")
-async def get_user(    
-    user_id: int,
-    request: Request, response: Response
-) -> UserResponse | None:
-    scope = request.scope
-
-    method = scope['method'].lower()
-    path = scope['path']
-    
-    url = f'{settings.USERS_SERVICE_URL}{path}'
-
-    try: 
-        resp_data, status_code = await make_request(
-            url=url,
-            method=method,
-        )
-    except aiohttp.client_exceptions.ClientConnectorError:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail='Service is unavailable.',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
-    except aiohttp.client_exceptions.ContentTypeError:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail='Service error.',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
-    
-    response.status_code = status_code
-    if status_code == status.HTTP_200_OK:
-        return resp_data
-    else:
-        raise HTTPException(
-            status_code=status_code,
-            detail=resp_data["detail"]
-        )
-
-
-@router.get("/")
-async def get_user_by_name(
-    user_search: UserSearch,
+@router.put("/passengers/{route_id}", response_model=Route)
+async def update_passengers_list(
+    route_id: str, 
+    passenger_list: UpdatePassengerList,
     request: Request, response: Response
 ):
     scope = request.scope
@@ -102,9 +64,9 @@ async def get_user_by_name(
     method = scope['method'].lower()
     path = scope['path']
     
-    url = f'{settings.USERS_SERVICE_URL}{path}'
+    url = f'{settings.ROUTES_SERVICE_URL}{path}'
 
-    payload = user_search.model_dump() if user_search else {}
+    payload = passenger_list.model_dump() if passenger_list else {}
 
     try: 
         resp_data, status_code = await make_request(
@@ -135,34 +97,22 @@ async def get_user_by_name(
         )
 
 
-@router.patch("/{user_id}")
-async def update_user(
-    user_id: int, 
-    user_data: UserCreate,
+@router.get("/{route_id}", response_model=Route)
+async def read_route_by_id(
+    route_id: str,
     request: Request, response: Response
-) -> UserResponse | None:
-    auth_token = request.headers.get("Authorization")
-
-    if auth_token is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No authorization token"
-        )
-
+) -> Route | None:
     scope = request.scope
 
     method = scope['method'].lower()
     path = scope['path']
     
-    url = f'{settings.USERS_SERVICE_URL}{path}'
-
-    payload = user_data.model_dump() if user_data else {}
+    url = f'{settings.ROUTES_SERVICE_URL}{path}'
 
     try: 
         resp_data, status_code = await make_request(
             url=url,
-            method=method,
-            data=payload,
+            method=method
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
@@ -178,40 +128,32 @@ async def update_user(
         )
     
     response.status_code = status_code
-    if status_code != status.HTTP_200_OK:
+    if status_code == status.HTTP_200_OK:
+        return resp_data
+    else:
         raise HTTPException(
             status_code=status_code,
             detail=resp_data["detail"]
         )
 
 
-    return resp_data
-    
-
-@router.delete("/{user_id}")
-async def delete_user(
-    user_id: int,
-    request: Request, response: Response
-) -> UserResponse | None:
-    auth_token = request.headers.get("Authorization")
-
-    if auth_token is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No authorization token"
-        )
-
+@router.delete("/{route_id}")
+async def delete_route_by_id(
+    route_id: str,
+    request: Request, response: Response       
+):
     scope = request.scope
 
     method = scope['method'].lower()
     path = scope['path']
     
-    url = f'{settings.USERS_SERVICE_URL}{path}'
+    url = f'{settings.ROUTES_SERVICE_URL}{path}'
+
 
     try: 
         resp_data, status_code = await make_request(
             url=url,
-            method=method,
+            method=method
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
@@ -227,11 +169,11 @@ async def delete_user(
         )
     
     response.status_code = status_code
-    if status_code != status.HTTP_200_OK:
+    if status_code == status.HTTP_200_OK:
+        return resp_data
+    else:
         raise HTTPException(
             status_code=status_code,
             detail=resp_data["detail"]
         )
-
-
-    return resp_data
+    

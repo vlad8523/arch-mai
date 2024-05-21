@@ -46,8 +46,5 @@ def generate_request_header(token_payload):
     return {'request-user-id': str(token_payload['id'])}
 
 
-def is_admin_user(token_payload):
+def is_driver_user(token_payload):
     return token_payload['is_driver']
-
-def is_default_user(token_payload):
-    return token_payload['user_type'] in ['default', 'admin']
