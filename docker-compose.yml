@@ -16,6 +16,7 @@ services:
   #     - arch-network
   #   depends_on:
   #     - db
+
   gateway:
     container_name: gateway
     build: application/gateway
@@ -26,7 +27,7 @@ services:
     networks:
       - arch-network
     depends_on:
-      - user-service
+      - route-service
 
   user-service:
     container_name: user-service
@@ -44,6 +45,18 @@ services:
     depends_on:
       - db
   
+  route-service:
+    container_name: route-service
+    build: application/route_service
+    environment:
+      - MONGO_URI=mongodb://mongo_db:27017
+      - MONGO_DB=bla-bla-db
+    ports:
+      - 8002:8000
+    networks:
+      - arch-network
+    depends_on:
+      - mongo_db
 
   mongo_db:
     container_name: mongo_db
@@ -54,6 +67,7 @@ services:
       - 27017:27017
     networks:
       - arch-network
+
 
   db:
     container_name: postgres

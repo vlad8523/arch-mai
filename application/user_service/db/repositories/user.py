@@ -72,4 +72,9 @@ class UserRepository(SQLAlchemyRepository):
         del data["password"]
 
         stmt = update(self.sqla_model).where(UserModel.id==user_id).values(data)
+
+        print(stmt)
+
         await self.db.execute(stmt)
+
+        await self.db.commit()
