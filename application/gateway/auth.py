@@ -1,3 +1,7 @@
+from typing import Annotated
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
 import jwt
 
 from datetime import datetime, timedelta
@@ -6,8 +10,11 @@ from config import settings
 from exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
 
 
+
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login/")
 
 
 def generate_access_token(
@@ -48,3 +55,14 @@ def generate_request_header(token_payload):
 
 def is_driver_user(token_payload):
     return token_payload['is_driver']
+
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    user = decode_access_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user

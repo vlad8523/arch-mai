@@ -46,12 +46,20 @@ class UserRepository(SQLAlchemyRepository):
             return None
 
 
-    async def get_user_by_email(self, email: str) -> List[UserInDB] | None:
+    async def get_user_by_email(self, email: str) -> UserInDB | None:
         stmt = select(self.sqla_model).where(UserModel.email==email)
 
         res = await self.db.execute(stmt)    
 
-        return res.fetchone()
+        return res.fetchone().first()
+    
+
+    async def get_user_by_username(self, username: str) -> UserModel| None:
+        stmt = select(self.sqla_model).where(UserModel.username==username)
+
+        res = await self.db.execute(stmt)    
+
+        return res.scalar_one_or_none()
     
 
     async def get_users_by_first_and_second_name(self, first_name: str, second_name: str) -> List[UserInDB] | None:

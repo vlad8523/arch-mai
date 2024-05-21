@@ -26,7 +26,6 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-from app.core.config import get_app_settings
 database_url = "postgresql+asyncpg://stud:stud@localhost:5432/archdb"
 config.set_main_option("sqlalchemy.url", database_url)
 
