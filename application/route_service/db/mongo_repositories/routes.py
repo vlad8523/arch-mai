@@ -14,5 +14,5 @@ class RoutesRepository(BaseMongoRepository):
             start_point=route['start_point'],
             destination_point=route['destination_point'],
             driver_id=route['driver_id'],
-            passenger_ids=route['passenger_ids']
+            passenger_list=route['passenger_list']
         )

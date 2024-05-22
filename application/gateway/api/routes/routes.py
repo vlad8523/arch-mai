@@ -4,7 +4,7 @@ import aiohttp
 from fastapi import APIRouter, Depends, Request, Response, HTTPException, status
 from network import make_request
 
-from models.route import CreateRoute, Route, UpdatePassengerList
+from models.route import CreateRoute, Route
 from config import settings
 from auth import oauth2_scheme
 
@@ -31,6 +31,7 @@ async def create_route(
             url=url,
             method=method,
             data=payload,
+            headers={"Authentification": f"Bearer {token}"}
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
@@ -55,10 +56,9 @@ async def create_route(
         )
 
 
-@router.put("/passengers/{route_id}", response_model=Route)
-async def update_passengers_list(
-    route_id: str, 
-    passenger_list: UpdatePassengerList,
+@router.put("/passenger/{route_id}", response_model=Route)
+async def add_passenger(
+    route_id: str,
     request: Request, response: Response,
     token: Annotated[str, Depends(oauth2_scheme)]
 ):
@@ -69,13 +69,10 @@ async def update_passengers_list(
     
     url = f'{settings.ROUTES_SERVICE_URL}{path}'
 
-    payload = passenger_list.model_dump() if passenger_list else {}
-
     try: 
         resp_data, status_code = await make_request(
             url=url,
             method=method,
-            data=payload,
             headers={"Authentification": f"Bearer {token}"}
         )
     except aiohttp.client_exceptions.ClientConnectorError:

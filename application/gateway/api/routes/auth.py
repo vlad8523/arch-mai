@@ -4,9 +4,8 @@ import aiohttp
 from fastapi import APIRouter, Depends, status, HTTPException, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 
-from auth import generate_access_token, get_current_user, oauth2_scheme
+
 from config import settings
-from models.users import UserLogin, UserResponse
 from network import make_request
 
 router = APIRouter()
@@ -50,10 +49,3 @@ async def login(
 
     if status_code == status.HTTP_200_OK:
         return {"access_token": resp_data, "token_type": "bearer"}
-
-
-@router.get("")
-async def get_user(
-    current_user: Annotated[dict, Depends(get_current_user)]
-):
-    return current_user
