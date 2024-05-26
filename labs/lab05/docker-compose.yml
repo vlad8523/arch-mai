@@ -1,0 +1,121 @@
+services:
+  gateway:
+    container_name: gateway
+    build: application/gateway
+    environment:
+      - USERS_SERVICE_URL=user-service
+      - ROUTES_SERVICE_URL=route-service
+      - REDIS_URL=cache
+    ports:
+      - 8000:8000
+    networks:
+      - arch-network
+    depends_on:
+      - route-service
+
+  user-service:
+    container_name: user-service
+    build: application/user_service
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_LOGIN=stud
+      - DB_PASSWORD=stud
+      - DB_DATABASE=archdb
+      - SECRET_KEY=0123456789
+    ports:
+      - 8001:8000
+    networks:
+      - arch-network
+    depends_on:
+      - db
+  
+  route-service:
+    container_name: route-service
+    build: application/route_service
+    environment:
+      - MONGO_URI=mongodb://mongo_db:27017
+      - MONGO_DB=bla-bla-db
+      - SECRET_KEY=0123456789
+    ports:
+      - 8002:8000
+    networks:
+      - arch-network
+    depends_on:
+      - mongo_db
+
+  mongo_db:
+    container_name: mongo_db
+    image: mongo
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017
+    restart: on-failure
+    networks:
+      - arch-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+
+  db:
+    container_name: postgres
+    image: postgres:15
+    environment:
+      - PGUSER=postgres
+      - POSTGRES_USER=stud
+      - POSTGRES_PASSWORD=stud
+      - PGDATA=/data/postgres
+      - POSTGRES_DB=archdb
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - arch-network
+
+  cache:
+    container_name: cache
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning 
+    networks:
+      - arch-network
+    volumes:
+      - cache:/data
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    user: '$UID:$GID'
+    ports:
+      - "5050:80"
+    volumes:
+     - ./docker_pg_data/pgadmin-data:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_LISTEN_PORT=80
+    depends_on:
+      - db
+    networks:
+      arch-network:
+
+volumes:
+  db:
+  mongodb:
+  pgadmin-data:
+  cache:
+
+networks:
+  arch-network:
+    driver: "bridge"
+    external: false

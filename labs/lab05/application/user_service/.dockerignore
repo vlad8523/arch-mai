@@ -1,0 +1,6 @@
+.venv/
+.idea/
+alembic/
+gateway/
+user-service/
+*.pyc
