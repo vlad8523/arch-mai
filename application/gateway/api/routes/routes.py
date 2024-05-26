@@ -1,13 +1,16 @@
 from typing import Annotated, Any
 import aiohttp
 
+import json
+
 from fastapi import APIRouter, Depends, Request, Response, HTTPException, status
+from cache.redis import create_key
 from network import make_request
 
 from models.route import CreateRoute, Route
 from config import settings
 from auth import oauth2_scheme
-
+from cache.redis import r
 
 router = APIRouter()
 
@@ -101,9 +104,10 @@ async def add_passenger(
 @router.get("/{route_id}", response_model=Route)
 async def read_route_by_id(
     route_id: str,
-    request: Request, response: Response,
-    token: Annotated[str, Depends(oauth2_scheme)]
+    request: Request, response: Response
 ) -> Route | None:
+    # ,
+    # token: Annotated[str, Depends(oauth2_scheme)]
     scope = request.scope
 
     method = scope['method'].lower()
@@ -111,11 +115,24 @@ async def read_route_by_id(
     
     url = f'{settings.ROUTES_SERVICE_URL}{path}'
 
+    # cache_key = create_key(service=settings.ROUTES_SERVICE_URL,
+    #                        method=method,
+    #                        path=path,
+    #                        token="token")
+    
+    # cache_route = r.get(cache_key)
+
+    # if cache_route:
+    #     print("CACHE DATA")
+    #     return json.loads(cache_route)
+    
+    # print("CACHE IS CLEAR")
+
     try: 
         resp_data, status_code = await make_request(
             url=url,
             method=method,
-            headers={"Authentification": f"Bearer {token}"}
+            headers={"Authentification": f"Bearer {"token"}"}
         )
     except aiohttp.client_exceptions.ClientConnectorError:
         raise HTTPException(
@@ -129,6 +146,8 @@ async def read_route_by_id(
             detail='Service error.',
             headers={'WWW-Authenticate': 'Bearer'},
         )
+    
+    # r.set(cache_key, json.dumps(resp_data), ex=settings.CACHE_EXPIRE_TIME)
     
     response.status_code = status_code
     if status_code == status.HTTP_200_OK:

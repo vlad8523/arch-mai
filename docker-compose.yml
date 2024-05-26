@@ -5,6 +5,7 @@ services:
     environment:
       - USERS_SERVICE_URL=user-service
       - ROUTES_SERVICE_URL=route-service
+      - REDIS_URL=cache
     ports:
       - 8000:8000
     networks:
