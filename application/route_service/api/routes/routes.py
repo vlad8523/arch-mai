@@ -69,10 +69,9 @@ async def add_passenger(
 
     if route is None:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
-    
-    del route["_id"]
 
     route["passenger_list"].append(passenger['id'])
+    del route["_id"]
 
     print(f"DATA BEFORE UPDATE {route}")
 
@@ -80,7 +79,7 @@ async def add_passenger(
 
     print(f"UPDATED ROUTE {route}")
     
-    return RoutesRepository().map(route)
+    return RoutesRepository().map(await repository.find_one(get_filter(route_id)))
 
 
 @router.get("/{route_id}", response_model=Route)

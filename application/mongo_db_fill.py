@@ -1,11 +1,11 @@
 from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorClient
 
-from app.core.config import get_app_settings
+from route_service.core.config import get_app_settings
 
-from app.api.dependencies.mongo_repository import get_repository
-from app.db.mongo_repositories.routes import RoutesRepository
+from route_service.api.dependencies.mongo_repository import get_repository
+from route_service.db.mongo_repositories.routes import RoutesRepository
 
-from app.models.domain.route import CreateRoute
+from route_service.models.domain.route import CreateRoute
 
 db_client = AsyncIOMotorClient(get_app_settings().mongo_uri)
 

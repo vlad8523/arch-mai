@@ -1,1 +1,421 @@
-{"openapi":"3.1.0","info":{"title":"BlaBla lab","version":"0.1.0"},"paths":{"/api/v1/user/":{"get":{"summary":"Get User By Name","operationId":"get_user_by_name_api_v1_user__get","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserSearch"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"summary":"Create User","operationId":"create_user_api_v1_user__post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserBase"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserInDB"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/user/{user_id}":{"get":{"summary":"Get User","operationId":"get_user_api_v1_user__user_id__get","parameters":[{"name":"user_id","in":"path","required":true,"schema":{"type":"integer","title":"User Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"anyOf":[{"$ref":"#/components/schemas/UserInDB"},{"type":"null"}],"title":"Response Get User Api V1 User  User Id  Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"patch":{"summary":"Update User","operationId":"update_user_api_v1_user__user_id__patch","parameters":[{"name":"user_id","in":"path","required":true,"schema":{"type":"integer","title":"User Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserBase"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"anyOf":[{"$ref":"#/components/schemas/UserInDB"},{"type":"null"}],"title":"Response Update User Api V1 User  User Id  Patch"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"summary":"Delete User","operationId":"delete_user_api_v1_user__user_id__delete","parameters":[{"name":"user_id","in":"path","required":true,"schema":{"type":"integer","title":"User Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"anyOf":[{"$ref":"#/components/schemas/UserInDB"},{"type":"null"}],"title":"Response Delete User Api V1 User  User Id  Delete"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/route":{"post":{"summary":"Create Route","operationId":"create_route_api_v1_route_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateRoute"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"title":"Response Create Route Api V1 Route Post"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/route/passengers/{route_id}":{"put":{"summary":"Update Passengers List","operationId":"update_passengers_list_api_v1_route_passengers__route_id__put","parameters":[{"name":"route_id","in":"path","required":true,"schema":{"type":"string","title":"Route Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdatePassengerList"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Route"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/route{route_id}":{"get":{"summary":"Delete Route By Id","operationId":"delete_route_by_id_api_v1_route_route_id__get","parameters":[{"name":"route_id","in":"path","required":true,"schema":{"type":"string","title":"Route Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}}},"components":{"schemas":{"CreateRoute":{"properties":{"start_point":{"type":"string","title":"Start Point"},"destination_point":{"type":"string","title":"Destination Point"},"driver_id":{"type":"integer","title":"Driver Id"},"passenger_ids":{"items":{"type":"integer"},"type":"array","title":"Passenger Ids","default":[]}},"type":"object","required":["start_point","destination_point","driver_id"],"title":"CreateRoute"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"Route":{"properties":{"start_point":{"type":"string","title":"Start Point"},"destination_point":{"type":"string","title":"Destination Point"},"driver_id":{"type":"integer","title":"Driver Id"},"passenger_ids":{"items":{"type":"integer"},"type":"array","title":"Passenger Ids","default":[]},"id":{"type":"string","title":"Id"}},"type":"object","required":["start_point","destination_point","driver_id","id"],"title":"Route"},"UpdatePassengerList":{"properties":{"passenger_ids":{"items":{"type":"integer"},"type":"array","title":"Passenger Ids"}},"type":"object","required":["passenger_ids"],"title":"UpdatePassengerList"},"UserBase":{"properties":{"first_name":{"type":"string","title":"First Name"},"second_name":{"type":"string","title":"Second Name"},"email":{"type":"string","title":"Email"},"is_driver":{"type":"boolean","title":"Is Driver"}},"type":"object","required":["first_name","second_name","email","is_driver"],"title":"UserBase"},"UserInDB":{"properties":{"id":{"type":"integer","title":"Id"},"first_name":{"type":"string","title":"First Name"},"second_name":{"type":"string","title":"Second Name"},"email":{"type":"string","title":"Email"},"is_driver":{"type":"boolean","title":"Is Driver"}},"additionalProperties":true,"type":"object","required":["id","first_name","second_name","email","is_driver"],"title":"UserInDB"},"UserSearch":{"properties":{"first_name":{"type":"string","title":"First Name"},"second_name":{"type":"string","title":"Second Name"}},"type":"object","required":["first_name","second_name"],"title":"UserSearch"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}}}}
+openapi: 3.0.3
+info:
+  title: FastAPI
+  version: 0.1.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/login/:
+    post:
+      summary: Login
+      operationId: login_api_login__post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              "$ref": "#/components/schemas/Body_login_api_login__post"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  /api/user/:
+    post:
+      summary: Create User
+      operationId: create_user_api_user__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserCreate"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - "$ref": "#/components/schemas/UserResponse"
+                - type: 'null'
+                title: Response Create User Api User  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  /api/user/{user_id}:
+    get:
+      summary: Get User
+      operationId: get_user_api_user__user_id__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - "$ref": "#/components/schemas/UserResponse"
+                - type: 'null'
+                title: Response Get User Api User  User Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    patch:
+      summary: Update User
+      operationId: update_user_api_user__user_id__patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserCreate"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - "$ref": "#/components/schemas/UserResponse"
+                - type: 'null'
+                title: Response Update User Api User  User Id  Patch
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      summary: Delete User
+      operationId: delete_user_api_user__user_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - "$ref": "#/components/schemas/UserResponse"
+                - type: 'null'
+                title: Response Delete User Api User  User Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  /api/route/:
+    post:
+      summary: Create Route
+      operationId: create_route_api_route__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateRoute"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Create Route Api Route  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - OAuth2PasswordBearer: []
+  /api/route/passenger/{route_id}:
+    put:
+      summary: Add Passenger
+      operationId: add_passenger_api_route_passenger__route_id__put
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: route_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Route Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Route"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  /api/route/{route_id}:
+    get:
+      summary: Read Route By Id
+      operationId: read_route_by_id_api_route__route_id__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: route_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Route Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Route"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      summary: Delete Route By Id
+      operationId: delete_route_by_id_api_route__route_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: route_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Route Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    Body_login_api_login__post:
+      properties:
+        grant_type:
+          anyOf:
+          - type: string
+            pattern: password
+          - type: 'null'
+          title: Grant Type
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          title: Password
+        scope:
+          type: string
+          title: Scope
+          default: ''
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      required:
+      - username
+      - password
+      title: Body_login_api_login__post
+    CreateRoute:
+      properties:
+        start_point:
+          type: string
+          title: Start Point
+        destination_point:
+          type: string
+          title: Destination Point
+      type: object
+      required:
+      - start_point
+      - destination_point
+      title: CreateRoute
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Route:
+      properties:
+        start_point:
+          type: string
+          title: Start Point
+        destination_point:
+          type: string
+          title: Destination Point
+        id:
+          type: string
+          title: Id
+        driver_id:
+          type: integer
+          title: Driver Id
+        passenger_list:
+          items:
+            type: integer
+          type: array
+          title: Passenger List
+      type: object
+      required:
+      - start_point
+      - destination_point
+      - id
+      - driver_id
+      - passenger_list
+      title: Route
+    UserCreate:
+      properties:
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          title: Password
+        email:
+          type: string
+          title: Email
+        first_name:
+          type: string
+          title: First Name
+        second_name:
+          type: string
+          title: Second Name
+        is_driver:
+          type: boolean
+          title: Is Driver
+      type: object
+      required:
+      - username
+      - password
+      - email
+      - first_name
+      - second_name
+      - is_driver
+      title: UserCreate
+    UserResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+        first_name:
+          type: string
+          title: First Name
+        second_name:
+          type: string
+          title: Second Name
+        email:
+          type: string
+          title: Email
+        username:
+          type: string
+          title: Username
+        hashed_password:
+          type: string
+          title: Hashed Password
+        is_driver:
+          type: boolean
+          title: Is Driver
+      type: object
+      required:
+      - id
+      - first_name
+      - second_name
+      - email
+      - username
+      - hashed_password
+      - is_driver
+      title: UserResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: api/login/

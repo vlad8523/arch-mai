@@ -80,7 +80,7 @@ async def add_passenger(
 
     print(f"UPDATED ROUTE {route}")
     
-    return RoutesRepository().map(route)
+    return RoutesRepository().map(await repository.find_one(get_filter(route_id)))
 
 
 @router.get("/{route_id}", response_model=Route)

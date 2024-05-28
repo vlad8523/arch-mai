@@ -92,49 +92,6 @@ async def get_user(
         )
 
 
-@router.get("/")
-async def get_user_by_name(
-    user_search: UserSearch,
-    request: Request, response: Response
-):
-    scope = request.scope
-
-    method = scope['method'].lower()
-    path = scope['path']
-    
-    url = f'{settings.USERS_SERVICE_URL}{path}'
-
-    payload = user_search.model_dump() if user_search else {}
-
-    try: 
-        resp_data, status_code = await make_request(
-            url=url,
-            method=method,
-            data=payload,
-        )
-    except aiohttp.client_exceptions.ClientConnectorError:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail='Service is unavailable.',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
-    except aiohttp.client_exceptions.ContentTypeError:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail='Service error.',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
-    
-    response.status_code = status_code
-    if status_code == status.HTTP_200_OK:
-        return resp_data
-    else:
-        raise HTTPException(
-            status_code=status_code,
-            detail=resp_data["detail"]
-        )
-
-
 @router.patch("/{user_id}")
 async def update_user(
     user_id: int, 

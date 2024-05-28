@@ -52,42 +52,6 @@ async def get_user(
     return user
 
 
-@router.get("/")
-async def get_user_by_name(
-    user_search: UserSearch,
-    repository: UserRepository = Depends(get_repository(UserRepository))
-):
-    users = await repository.get_users_by_first_and_second_name(first_name=user_search.first_name,
-                                                                second_name=user_search.second_name)
-
-    if not users:
-        raise HTTPException(
-            status_code=400,
-            detail="No users with this name."
-        )
-    
-    return users
-
-
-@router.patch("/{user_id}")
-async def update_user(
-    user_id: int, 
-    user_data: UserCreate,
-    repository: UserRepository = Depends(get_repository(UserRepository))
-) -> UserInDB | None:
-    user = await repository.read_by_id(user_id)
-
-    if user is None: 
-        return HTTPException(
-            status_code=400,
-            detail="User not found"
-        )
-    
-    await repository.update_user(user_id, user_data)
-
-    return await repository.read_by_id(user_id)
-
-
 @router.delete("/{user_id}")
 async def delete_user(
     user_id: int, 

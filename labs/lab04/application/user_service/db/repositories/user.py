@@ -51,7 +51,7 @@ class UserRepository(SQLAlchemyRepository):
 
         res = await self.db.execute(stmt)    
 
-        return res.fetchone().first()
+        return res.scalar_one_or_none()
     
 
     async def get_user_by_username(self, username: str) -> UserModel| None:

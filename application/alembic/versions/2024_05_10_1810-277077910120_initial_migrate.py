@@ -28,15 +28,7 @@ def upgrade() -> None:
     sa.Column('is_driver', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    # op.execute('INSERT INTO public."user"(first_name, second_name, email, is_driver) VALUES ' + \
-    #            "('Vladislav', 'Svinarenko', 'vladushek@mail.ru', true)")
-    # op.execute('INSERT INTO public."user"(first_name, second_name, email, is_driver) VALUES ' + \
-    #            "('Vasya', 'Pupkin', 'test@mail.ru', false)")
-    # op.execute('INSERT INTO public."user"(first_name, second_name, email, is_driver) VALUES ' + \
-    #            "('Alina', 'Chernygovna', 'chern@mail.ru', true)")
-    # op.execute('INSERT INTO public."user"(first_name, second_name, email, is_driver) VALUES ' + \
-    #            "('Andrey', 'Golovinsky', 'golovand@mail.ru', true)") 
-              
+    
     # ### end Alembic commands ###
 
 
