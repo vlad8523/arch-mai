@@ -1,5 +1,7 @@
 ## Необходимо также сделать миграции при помощи alembic
 
+python -m venv venv
+(activate venv)
 alembic upgrade head
 
 ## Пользователи создаваемые скриптом
