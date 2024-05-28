@@ -12,6 +12,3 @@ class User(Base, BaseDBModel):
     hashed_password = Column(String)
     email = Column(String)
     is_driver = Column(Boolean)
-
-
-    

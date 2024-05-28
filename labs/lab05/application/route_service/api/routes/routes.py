@@ -8,9 +8,11 @@ from bson import ObjectId
 
 from api.dependencies.mongo_repository import get_repository
 from db.mongodb import get_filter
-from models.domain.route import CreateRoute, Route, UpdatePassengerList
+from models.domain.route import CreateRoute, Route
 from db.mongo_repositories.routes import RoutesRepository
 from security.auth import decode_access_token
+
+from mongo_db_fill import test_data
 
 
 router = APIRouter()
@@ -147,3 +149,18 @@ async def delete_route_by_id(
     print(f"DELETE ROUTE {db_route}")
 
     return "Succesfully delete route"
+
+
+@router.post("/test-data")
+async def create_test_data(
+    repository: AsyncIOMotorCollection = Depends(get_repository(RoutesRepository))
+):
+    routes: List[str] = []
+    for route_new in test_data:
+        try:
+            insert_result = await repository.insert_one(route_new.model_dump())
+            routes.append(str(insert_result.inserted_id))
+        except HTTPException as e:
+            raise e
+
+    return routes

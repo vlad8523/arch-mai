@@ -1,19 +1,22 @@
-from typing import Optional
-
 from app.models.base import BaseSchema, IDSchemaMixin
 
-class UserBase(BaseSchema):
+class UserLogin(BaseSchema):
+    username: str
+    password: str
+
+
+class UserData(BaseSchema):
+    email: str
     first_name: str
     second_name: str
-    email: str
     is_driver: bool
 
-class UserCreate(UserBase):
-    id: int
 
-class UserSearch(BaseSchema):
-    first_name: str
-    second_name: str
-
-class UserInDB(UserBase, IDSchemaMixin):
+class UserCreate(UserData, UserLogin):
     pass
+
+
+class UserInDB(UserData, IDSchemaMixin):
+    email: str
+    username: str
+    hashed_password: str

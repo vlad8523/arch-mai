@@ -6,6 +6,8 @@ from db.repositories.user import UserRepository
 from models.domain.user import UserCreate, UserInDB, UserSearch
 
 
+from db_fill import test_data
+
 router = APIRouter()
 
 @router.post("/")
@@ -84,3 +86,13 @@ async def delete_user(
         )
     
     return user
+
+
+@router.post("/test-data")
+async def create_test_data(
+    repository: UserRepository = Depends(get_repository(UserRepository))
+):
+    for user_new in test_data:
+        await repository.create(obj_new=user_new)
+
+    return 'Success'

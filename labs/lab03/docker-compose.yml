@@ -1,34 +1,34 @@
 services:
-  api:
-    container_name: api
-    build: fastapi-server/
+  api_lab03:
+    container_name: api_lab03
+    build: application/
     environment:
-      - DB_HOST=postgres
+      - DB_HOST=postgres_lab03
       - DB_PORT=5432
       - DB_LOGIN=stud
       - DB_PASSWORD=stud
       - DB_DATABASE=archdb
-      - MONGO_URI=mongodb://mongo_db:27017
+      - MONGO_URI=mongodb://mongo_db_lab03:27017
       - MONGO_DB=bla-bla-db
     ports:
       - 8000:8000
     networks:
-      - arch-network
+      - arch-network_lab03
     depends_on:
-      - db
+      - db_lab03
 
-  mongo_db:
-    container_name: mongo_db
+  mongo_db_lab03:
+    container_name: mongo_db_lab03
     image: mongo
     volumes:
-      - mongodb:/data/db
+      - mongodb_lab03:/data/db
     ports:
       - 27017:27017
     networks:
-      - arch-network
+      - arch-network_lab03
 
-  db:
-    container_name: postgres
+  db_lab03:
+    container_name: postgres_lab03
     image: postgres:15
     environment:
       - PGUSER=postgres
@@ -37,7 +37,7 @@ services:
       - PGDATA=/data/postgres
       - POSTGRES_DB=archdb
     volumes:
-      - db:/data/postgres
+      - db_lab03:/data/postgres
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -47,10 +47,10 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - arch-network
+      - arch-network_lab03
 
-  pgadmin:
-    container_name: pgadmin4
+  pgadmin_lab03s:
+    container_name: pgadmin4_lab03
     image: dpage/pgadmin4
     restart: always
     user: '$UID:$GID'
@@ -63,16 +63,16 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=postgres
       - PGADMIN_LISTEN_PORT=80
     depends_on:
-      - db
+      - db_lab03
     networks:
-      arch-network:
+      arch-network_lab03:
 
 volumes:
-  db:
-  mongodb:
-  pgadmin-data:
+  db_lab03:
+  mongodb_lab03:
+  pgadmin-data_lab03:
 
 networks:
-  arch-network:
+  arch-network_lab03:
     driver: "bridge"
     external: false

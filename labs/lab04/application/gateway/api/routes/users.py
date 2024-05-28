@@ -1,3 +1,4 @@
+from typing import Any
 import aiohttp
 from fastapi import APIRouter, status, HTTPException, Request, Response
 
@@ -192,3 +193,43 @@ async def delete_user(
 
 
     return resp_data
+
+
+@router.post("/test-data")
+async def create_test_data(
+    request: Request, response: Response
+) -> Any:
+    scope = request.scope
+
+    method = scope['method'].lower()
+    path = scope['path']
+    
+    url = f'{settings.USERS_SERVICE_URL}{path}'
+
+
+    try: 
+        resp_data, status_code = await make_request(
+            url=url,
+            method=method
+        )
+    except aiohttp.client_exceptions.ClientConnectorError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail='Service is unavailable.',
+            headers={'WWW-Authenticate': 'Bearer'},
+        )
+    except aiohttp.client_exceptions.ContentTypeError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Service error.',
+            headers={'WWW-Authenticate': 'Bearer'},
+        )
+    
+    response.status_code = status_code
+    if status_code == status.HTTP_200_OK:
+        return resp_data
+    else:
+        raise HTTPException(
+            status_code=status_code,
+            detail=resp_data["detail"]
+        )

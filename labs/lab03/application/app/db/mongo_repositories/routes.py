@@ -9,7 +9,7 @@ class RoutesRepository(BaseMongoRepository):
     collection_name = "ROUTES_COLLECTION"
 
     def map(self, route: Any) -> Route:
-        Route(
+        return Route(
             id=str(route['_id']),
             start_point=route['start_point'],
             destination_point=route['destination_point'],

@@ -6,6 +6,8 @@ from db.repositories.user import UserRepository
 from models.domain.user import UserCreate, UserInDB, UserSearch
 
 
+from db_fill import test_data
+
 router = APIRouter()
 
 @router.post("/")
@@ -50,3 +52,47 @@ async def get_user(
         )
     
     return user
+
+
+@router.patch("/{user_id}")
+async def update_user(
+    user_id: int, 
+    user_data: UserCreate,
+    repository: UserRepository = Depends(get_repository(UserRepository))
+) -> UserInDB | None:
+    user = await repository.read_by_id(user_id)
+
+    if user is None: 
+        return HTTPException(
+            status_code=400,
+            detail="User not found"
+        )
+    
+    await repository.update_user(user_id, user_data)
+
+    return await repository.read_by_id(user_id)
+
+
+@router.delete("/{user_id}")
+async def delete_user(
+    user_id: int, 
+    repository: UserRepository = Depends(get_repository(UserRepository))
+) -> UserInDB | None:
+    user = await repository.delete(user_id)
+
+    if not user: 
+        raise HTTPException(
+            status_code=400, detail="User not found"
+        )
+    
+    return user
+
+
+@router.post("/test-data")
+async def create_test_data(
+    repository: UserRepository = Depends(get_repository(UserRepository))
+):
+    for user_new in test_data:
+        await repository.create(obj_new=user_new)
+
+    return 'Success'

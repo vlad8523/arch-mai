@@ -1,4 +1,4 @@
-from app.models.domain.route import CreateRoute
+from models.domain.route import CreateRoute
 
 
 test_data = [
