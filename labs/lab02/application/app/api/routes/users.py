@@ -1,12 +1,12 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from api.dependencies.postgres_repository import get_repository
-from db.repositories.user import UserRepository
-from models.domain.user import UserCreate, UserInDB, UserSearch
-
+from app.api.dependencies.postgres_repository import get_repository
+from app.db.repositories.user import UserRepository
+from app.models.domain.user import UserCreate, UserInDB
 
 from db_fill import test_data
+
 
 router = APIRouter()
 
@@ -15,6 +15,8 @@ async def create_user(
     user_new: UserCreate,
     repository: UserRepository = Depends(get_repository(UserRepository))
 ) -> UserInDB | None:
+    print(user_new.model_dump())
+    
     existed_user = await repository.get_user_by_email(user_new.email)
     
     if existed_user:
@@ -34,7 +36,7 @@ async def create_user(
         )
     
     user = await repository.create(obj_new=user_new)
-
+    print(user)
     return user
 
 
@@ -92,7 +94,12 @@ async def delete_user(
 async def create_test_data(
     repository: UserRepository = Depends(get_repository(UserRepository))
 ):
+    users: List[UserInDB] = []
     for user_new in test_data:
-        await repository.create(obj_new=user_new)
+        try:
+            users.append(await create_user(user_new=user_new,
+                                       repository=repository))
+        except HTTPException as e:
+            raise e
 
-    return 'Success'
+    return users
